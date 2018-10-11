@@ -1,0 +1,9 @@
+user: system
+password: oracle
+
+user: scott
+password: oracle
+
+Servie Name: ORCL  
+Port : 1521
+Hostname : LOCALHOST
