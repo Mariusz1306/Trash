@@ -1,0 +1,155 @@
+SELECT
+    d.department_name,
+    e.last_name,
+    e.salary
+FROM
+    hr.departments d
+    INNER JOIN hr.employees e ON d.department_id = e.department_id
+ORDER BY
+    d.department_name,
+    e.salary DESC;
+    
+SELECT 
+    d.department_name, 
+    e.last_name, 
+    e.salary
+FROM 
+    hr.departments d, 
+    hr.employees e 
+WHERE 
+    d.department_id (+) = e.department_id
+ORDER BY 
+    d.department_name, 
+    e.salary DESC;
+    
+SELECT
+    d.department_name,
+    e.last_name,
+    e.salary
+FROM
+    hr.departments d
+INNER JOIN 
+    hr.employees e 
+USING 
+    (department_id)
+ORDER BY
+    d.department_name,
+    e.salary DESC;
+
+//Wybierz pracowników najwiêcej zarabiaj¹cych w danym departamencie
+SELECT 
+    d.department_name, 
+    e.last_name, 
+    e.salary
+FROM 
+    hr.departments d 
+INNER JOIN 
+    hr.employees e
+ON 
+    d.department_id = e.department_id
+WHERE 
+    e.salary IN (
+        SELECT 
+            max(e1.salary)
+        FROM 
+            hr.employees e1
+        WHERE 
+            e1.department_id = e.department_id
+        )
+ORDER BY 
+    d.department_name, e.salary DESC;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+SELECT 
+    d.department_name, 
+    e.last_name, 
+    e.salary
+FROM 
+    hr.departments d 
+INNER JOIN 
+    hr.employees e
+ON 
+    d.department_id = e.department_id
+WHERE 
+    (d.department_name, e.salary) 
+IN (
+    SELECT 
+        d.department_name, 
+        max(e.salary)
+    FROM 
+        hr.departments d 
+    JOIN 
+        hr.employees e
+    ON 
+        d.department_id = e.department_id
+    GROUP BY 
+        d.department_name
+    )
+ORDER BY d.department_name, e.salary DESC;
+
+WITH
+temp1(a1,a2) as (
+    SELECT 
+        d.department_name, 
+        MAX(e.salary)
+    FROM 
+        hr.departments d 
+    JOIN 
+        hr.employees e
+    ON 
+        d.department_id = e.department_id
+    GROUP BY 
+        d.department_name
+    ),
+temp2(a1,a2) as (   
+    SELECT 
+        d.department_name, 
+        MIN(e.salary)
+    FROM 
+        hr.departments d 
+    JOIN 
+        hr.employees e
+    ON 
+        d.department_id = e.department_id
+    GROUP BY 
+        d.department_name
+    ),
+temp3(a1,a2,a3) AS (
+    SELECT 
+        d.department_name, 
+        e.last_name, 
+        e.salary
+    FROM 
+        hr.departments d 
+    INNER JOIN 
+        hr.employees e
+    ON 
+        d.department_id = e.department_id
+    )
+SELECT * FROM temp3 
+WHERE (a1,a3)
+IN (SELECT * FROM temp2)
+ORDER BY a1,a3 DESC;
+
+/////////////////////////////////////////////////////////////
+SELECT 
+    last_name, 
+    salary, 
+    job_id, 
+    row_number() OVER (PARTITION BY job_id ORDER BY salary DESC)
+FROM hr.employees;
+------
+
+//Dwóch najlepiej zarabiaj¹cych pracowników na danym stanowisku (job_id)
+WITH 
+temp1 as (
+SELECT 
+    last_name, 
+    salary, 
+    job_id, 
+    row_number() OVER (PARTITION BY job_id ORDER BY salary DESC) as ranking
+FROM hr.employees
+)
+SELECT * FROM temp1
+where ranking <= 1;
+

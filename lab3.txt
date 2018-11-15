@@ -1,0 +1,7 @@
+-- Podaj osoby zarabi¹jace najmniej na danym stanowisku pracy    
+-- Podaj w danym departamencie, w danym zawodzie osobê z najwy¿sz¹ pensj¹
+-- W jakim z pañstw jest w danym departmanecie najwiêcej osób zatrudnionych
+-- Podaj liczbê zatrudnionych w danym roku i miesiacu osób 
+    --(kolumny - Miesiace, wiersze - iloœæ osób) --DECODE (13kolumn- wierszy ?)
+    
+    
